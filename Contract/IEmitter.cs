@@ -33,6 +33,7 @@ namespace Bridge.Contract
         Mono.Cecil.TypeDefinition GetBaseTypeDefinition();
         Mono.Cecil.TypeDefinition GetBaseTypeDefinition(Mono.Cecil.TypeDefinition type);
         string GetEntityName(ICSharpCode.NRefactory.CSharp.EntityDeclaration entity, bool cancelChangeCase = false, bool ignoreInterface = false);
+        string GetEntityName(ICSharpCode.NRefactory.CSharp.ParameterDeclaration entity, bool cancelChangeCase = false);
         string GetEntityName(ICSharpCode.NRefactory.TypeSystem.IEntity member, bool cancelChangeCase = false, bool ignoreInterface = false);
         string GetInline(ICSharpCode.NRefactory.CSharp.EntityDeclaration method);
         string GetInline(ICSharpCode.NRefactory.TypeSystem.IEntity entity);

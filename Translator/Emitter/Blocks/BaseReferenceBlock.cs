@@ -1,5 +1,7 @@
 ﻿using Bridge.Contract;
 using ICSharpCode.NRefactory.CSharp;
+using ICSharpCode.NRefactory.Semantics;
+using ICSharpCode.NRefactory.TypeSystem;
 
 namespace Bridge.Translator
 {
@@ -25,8 +27,39 @@ namespace Bridge.Translator
 
         protected override void EmitConversionExpression()
         {
-            var baseType = this.Emitter.GetBaseTypeDefinition();
-            this.Write(BridgeTypes.ToJsName(baseType, this.Emitter), ".prototype");
+            var proto = false;
+            if (this.BaseReferenceExpression.Parent != null) 
+            {
+                var rr = this.Emitter.Resolver.ResolveNode(this.BaseReferenceExpression.Parent, this.Emitter) as MemberResolveResult;
+
+                if (rr != null)
+                {
+                    var method = rr.Member as IMethod;
+                    if (method != null && method.IsVirtual)
+                    {
+                        proto = true;
+                    }
+                    else
+                    {
+                        var prop = rr.Member as IProperty;
+
+                        if (prop != null && prop.IsVirtual)
+                        {
+                            proto = true;
+                        }
+                    }                    
+                }
+            }
+
+            if (proto)
+            {
+                var baseType = this.Emitter.GetBaseTypeDefinition();
+                this.Write(BridgeTypes.ToJsName(baseType, this.Emitter), ".prototype");
+            }
+            else
+            {
+                this.WriteThis();
+            }            
         }
     }
 }

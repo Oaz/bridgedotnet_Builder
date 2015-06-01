@@ -420,6 +420,17 @@ namespace Bridge.Translator
                 }
                 else if (member.Member.SymbolKind == SymbolKind.Property && member.TargetResult.Type.Kind != TypeKind.Anonymous && !this.Emitter.Validator.IsObjectLiteral(member.Member.DeclaringTypeDefinition))
                 {
+                    var proto = false;
+                    if (this.MemberReferenceExpression.Target is BaseReferenceExpression && member != null)
+                    {
+                        var prop = member.Member as IProperty;
+
+                        if (prop != null && prop.IsVirtual)
+                        {
+                            proto = true;
+                        }
+                    }
+                    
                     if (Helpers.IsFieldProperty(member.Member, this.Emitter))
                     {
                         this.Write(Helpers.GetPropertyRef(member.Member, this.Emitter));
@@ -431,7 +442,17 @@ namespace Bridge.Translator
                             if (isStatement)
                             {
                                 this.Write(Helpers.GetPropertyRef(member.Member, this.Emitter, true));
-                                this.WriteOpenParentheses();
+                                if (proto)
+                                {
+                                    this.Write(".call");
+                                    this.WriteOpenParentheses();
+                                    this.WriteThis();
+                                    this.WriteComma();
+                                }
+                                else
+                                {
+                                    this.WriteOpenParentheses();
+                                }
 
                                 if (targetVar != null)
                                 {
@@ -445,8 +466,19 @@ namespace Bridge.Translator
                                 this.WriteDot();
 
                                 this.Write(Helpers.GetPropertyRef(member.Member, this.Emitter, false));
-                                this.WriteOpenParentheses();
-                                this.WriteCloseParentheses();
+
+                                if (proto)
+                                {
+                                    this.Write(".call");
+                                    this.WriteOpenParentheses();
+                                    this.WriteThis();
+                                    this.WriteCloseParentheses();
+                                }
+                                else
+                                {
+                                    this.WriteOpenParentheses();
+                                    this.WriteCloseParentheses();
+                                }                                
 
                                 if (this.Emitter.UnaryOperatorType == UnaryOperatorType.Increment || this.Emitter.UnaryOperatorType == UnaryOperatorType.PostIncrement)
                                 {
@@ -463,8 +495,18 @@ namespace Bridge.Translator
                             else
                             {
                                 this.Write(Helpers.GetPropertyRef(member.Member, this.Emitter, false));
-                                this.WriteOpenParentheses();
-                                this.WriteCloseParentheses();
+                                if (proto)
+                                {
+                                    this.Write(".call");
+                                    this.WriteOpenParentheses();
+                                    this.WriteThis();
+                                    this.WriteCloseParentheses();
+                                }
+                                else
+                                {
+                                    this.WriteOpenParentheses();
+                                    this.WriteCloseParentheses();
+                                }     
                                 this.WriteComma();
 
                                 if (targetVar != null)
@@ -478,6 +520,19 @@ namespace Bridge.Translator
 
                                 this.WriteDot();
                                 this.Write(Helpers.GetPropertyRef(member.Member, this.Emitter, true));
+
+                                if (proto)
+                                {
+                                    this.Write(".call");
+                                    this.WriteOpenParentheses();
+                                    this.WriteThis();
+                                    this.WriteComma();
+                                }
+                                else
+                                {
+                                    this.WriteOpenParentheses();
+                                }
+
                                 this.WriteOpenParentheses();
                                 this.Write(valueVar);
 
@@ -526,8 +581,18 @@ namespace Bridge.Translator
                         else
                         {
                             this.Write(Helpers.GetPropertyRef(member.Member, this.Emitter));
-                            this.WriteOpenParentheses();
-                            this.WriteCloseParentheses();
+                            if (proto)
+                            {
+                                this.Write(".call");
+                                this.WriteOpenParentheses();
+                                this.WriteThis();
+                                this.WriteCloseParentheses();
+                            }
+                            else
+                            {
+                                this.WriteOpenParentheses();
+                                this.WriteCloseParentheses();
+                            }   
                         }
                     }
                     else if (this.Emitter.AssignmentType != AssignmentOperatorType.Assign)
@@ -535,11 +600,11 @@ namespace Bridge.Translator
                         if(targetVar != null)
                         {
                             this.PushWriter(string.Concat(Helpers.GetPropertyRef(member.Member, this.Emitter, true),
-                                "(",
+                                proto ? ".call(this, " : "(",                                
                                 targetVar,
                                 ".",
                                 Helpers.GetPropertyRef(member.Member, this.Emitter, false),
-                                "()",
+                                proto ? ".call(this)" : "()",                                
                                 "{0})"), () => { this.RemoveTempVar(targetVar); });
                         }
                         else
@@ -556,17 +621,24 @@ namespace Bridge.Translator
 
                             this.RestoreWriter(oldWriter);
                             this.PushWriter(string.Concat(Helpers.GetPropertyRef(member.Member, this.Emitter, true),
-                                "(",
+                                proto ? ".call(this, " : "(",
                                 trg,
                                 ".",
                                 Helpers.GetPropertyRef(member.Member, this.Emitter, false),
-                                "()",
+                                proto ? ".call(this)" : "()",
                                 "{0})"));
                         }
                     }
                     else
                     {
-                        this.PushWriter(Helpers.GetPropertyRef(member.Member, this.Emitter, true) + "({0})");
+                        if (proto)
+                        {
+                            this.PushWriter(Helpers.GetPropertyRef(member.Member, this.Emitter, true) + ".call(this, {0})");
+                        }
+                        else
+                        {
+                            this.PushWriter(Helpers.GetPropertyRef(member.Member, this.Emitter, true) + "({0})");
+                        }                        
                     }
                 }
                 else if (member.Member.SymbolKind == SymbolKind.Field)

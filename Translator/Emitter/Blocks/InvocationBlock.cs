@@ -136,6 +136,12 @@ namespace Bridge.Translator
 
             MemberReferenceExpression targetMember = invocationExpression.Target as MemberReferenceExpression;
 
+            ResolveResult targetMemberResolveResult = null;
+            if (targetMember != null)
+            {
+                targetMemberResolveResult = this.Emitter.Resolver.ResolveNode(targetMember.Target, this.Emitter);
+            }
+
             if (targetMember != null)
             {
                 var member = this.Emitter.Resolver.ResolveNode(targetMember.Target, this.Emitter);
@@ -240,7 +246,31 @@ namespace Bridge.Translator
                 }
             }
 
+            var proto = false;
             if (targetMember != null && targetMember.Target is BaseReferenceExpression)
+            {
+                var rr = this.Emitter.Resolver.ResolveNode(targetMember, this.Emitter) as MemberResolveResult;
+
+                if (rr != null)
+                {
+                    var method = rr.Member as IMethod;
+                    if (method != null && method.IsVirtual)
+                    {
+                        proto = true;
+                    }
+                    else
+                    {
+                        var prop = rr.Member as IProperty;
+
+                        if (prop != null && prop.IsVirtual)
+                        {
+                            proto = true;
+                        }
+                    }
+                }
+            }
+
+            if (proto)
             {
                 var baseType = this.Emitter.GetBaseMethodOwnerTypeDefinition(targetMember.MemberName, targetMember.TypeArguments.Count);
                 var method = invocationExpression.GetParent<MethodDeclaration>();
