@@ -15,6 +15,8 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>0a47050a</NuGetPackageImportStamp>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\Bridge\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -85,8 +87,10 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\Bridge\packages\MSBuild.ILMerge.Task.1.0.3-rc2\build\MSBuild.ILMerge.Task.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\Bridge\packages\MSBuild.ILMerge.Task.1.0.3-rc2\build\MSBuild.ILMerge.Task.props'))" />
     <Error Condition="!Exists('..\..\Bridge\packages\MSBuild.ILMerge.Task.1.0.3-rc2\build\MSBuild.ILMerge.Task.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\Bridge\packages\MSBuild.ILMerge.Task.1.0.3-rc2\build\MSBuild.ILMerge.Task.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <ImportGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Import Project="..\..\Bridge\packages\MSBuild.ILMerge.Task.1.0.3-rc2\build\MSBuild.ILMerge.Task.targets" Condition="Exists('..\..\Bridge\packages\MSBuild.ILMerge.Task.1.0.3-rc2\build\MSBuild.ILMerge.Task.targets')" />
   </ImportGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 </Project>
