@@ -174,7 +174,7 @@ namespace Bridge.Translator
 
             var classStr = this.Emitter.Output.ToString().Substring(this.StartPosition);
 
-            if(Regex.IsMatch(classStr, ",\\s*\\{\\s*\\}", RegexOptions.Multiline))
+            if (Regex.IsMatch(classStr, "^\\s*,\\s*\\{\\s*\\}\\s*$", RegexOptions.Multiline))
             {
                 this.Emitter.Output.Remove(this.StartPosition, this.Emitter.Output.Length - this.StartPosition);
             }
