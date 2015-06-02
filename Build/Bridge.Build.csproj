@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ImportGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' "> 
+  <ImportGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Import Project="..\..\Bridge\packages\MSBuild.ILMerge.Task.1.0.3-rc2\build\MSBuild.ILMerge.Task.props" Condition="Exists('..\..\Bridge\packages\MSBuild.ILMerge.Task.1.0.3-rc2\build\MSBuild.ILMerge.Task.props')" />
   </ImportGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -16,6 +16,8 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>19d9a336</NuGetPackageImportStamp>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\Bridge\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -81,8 +83,10 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\Bridge\packages\MSBuild.ILMerge.Task.1.0.3-rc2\build\MSBuild.ILMerge.Task.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\Bridge\packages\MSBuild.ILMerge.Task.1.0.3-rc2\build\MSBuild.ILMerge.Task.props'))" />
     <Error Condition="!Exists('..\..\Bridge\packages\MSBuild.ILMerge.Task.1.0.3-rc2\build\MSBuild.ILMerge.Task.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\Bridge\packages\MSBuild.ILMerge.Task.1.0.3-rc2\build\MSBuild.ILMerge.Task.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <ImportGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Import Project="..\..\Bridge\packages\MSBuild.ILMerge.Task.1.0.3-rc2\build\MSBuild.ILMerge.Task.targets" Condition="Exists('..\..\Bridge\packages\MSBuild.ILMerge.Task.1.0.3-rc2\build\MSBuild.ILMerge.Task.targets')" />
   </ImportGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 </Project>

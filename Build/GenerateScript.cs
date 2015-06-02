@@ -104,7 +104,7 @@ namespace Bridge.Build
 
                 if (!this.NoCore)
                 {
-                    Bridge.Translator.Translator.ExtractCore(translator.BridgeLocation, outputPath);
+                    Bridge.Translator.Translator.ExtractCore(translator, outputPath);
                 }
             }
             catch (EmitterException e)

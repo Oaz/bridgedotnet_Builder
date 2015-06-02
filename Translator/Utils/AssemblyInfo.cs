@@ -71,6 +71,24 @@ namespace Bridge.Translator
             }
         }
 
+        private JavaScriptOutputType jsOutType = JavaScriptOutputType.Both;
+
+        /// <summary>
+        /// The option to select JavaScript file output for only beautified, only minified or both versions.
+        /// See the JavaScriptOutputType enum for more details.
+        /// </summary>
+        public JavaScriptOutputType OutputFormatting
+        {
+            get
+            {
+                return this.jsOutType;
+            }
+            set
+            {
+                this.jsOutType = value;
+            }
+        }
+
         /// <summary>
         /// Substrings the file name starting with the defined index.
         /// For example, it might be useful to get rid of the first namespace in the chain if use ByFullName or ByNamespace FilesHierarchy.

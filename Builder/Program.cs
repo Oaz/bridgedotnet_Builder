@@ -173,7 +173,7 @@ namespace Bridge.Builder
                 if (extractCore)
                 {
                     Console.WriteLine("Extracting core scripts...");
-                    Bridge.Translator.Translator.ExtractCore(translator.BridgeLocation, outputPath);
+                    Bridge.Translator.Translator.ExtractCore(translator, outputPath);
                 }
 
                 Console.WriteLine("Done.");

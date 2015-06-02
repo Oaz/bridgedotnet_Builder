@@ -129,15 +129,26 @@ namespace Bridge.Translator
                 // If 'fileName' is an absolute path, Path.Combine will ignore the 'path' prefix.
                 string filePath = Path.Combine(path, fileName);
 
-                var file = new System.IO.FileInfo(filePath);
-                file.Directory.Create();
-                File.WriteAllText(file.FullName, "/* global Bridge */\n\n" + code, System.Text.UTF8Encoding.UTF8);
+                System.IO.FileInfo file;
 
-                fileName = Path.GetFileNameWithoutExtension(filePath) + ".min" + Path.GetExtension(filePath);
-                filePath = Path.Combine(Path.GetDirectoryName(filePath), fileName);
-                file = new System.IO.FileInfo(filePath);
-                file.Directory.Create();
-                File.WriteAllText(file.FullName, minifier.MinifyJavaScript(code), System.Text.UTF8Encoding.UTF8);
+                // We can only have Beautified, Minified or Both, so this test has inverted logic:
+                // output beautified if not minified only == (output beautified or output both)
+                if (this.AssemblyInfo.OutputFormatting != JavaScriptOutputType.Minified)
+                {
+                    file = new System.IO.FileInfo(filePath);
+                    file.Directory.Create();
+                    File.WriteAllText(file.FullName, "/* global Bridge */\n\n" + code, System.Text.UTF8Encoding.UTF8);
+                }
+
+                // Like above test: output minified if not beautified only == (out minified or out both)
+                if (this.AssemblyInfo.OutputFormatting != JavaScriptOutputType.Formatted)
+                {
+                    fileName = Path.GetFileNameWithoutExtension(filePath) + ".min" + Path.GetExtension(filePath);
+                    filePath = Path.Combine(Path.GetDirectoryName(filePath), fileName);
+                    file = new System.IO.FileInfo(filePath);
+                    file.Directory.Create();
+                    File.WriteAllText(file.FullName, minifier.MinifyJavaScript(code), System.Text.UTF8Encoding.UTF8);
+                }
             }
 
             if (!string.IsNullOrWhiteSpace(this.AssemblyInfo.AfterBuild))
@@ -164,33 +175,40 @@ namespace Bridge.Translator
             return new Validator();
         }
 
-        public static void ExtractCore(string clrPath, string outputPath)
+        public static void ExtractCore(Translator translatorInstance, string outputPath, bool nodebug = false)
         {
-            Translator.ExtractCore(clrPath, outputPath, false);
-        }
-
-        public static void ExtractCore(string clrPath, string outputPath, bool nodebug)
-        {
+            var clrPath = translatorInstance.BridgeLocation;
             var assembly = System.Reflection.Assembly.ReflectionOnlyLoadFrom(clrPath);
-            var resourceName = "Bridge.Resources.bridge.js";
+            string resourceName;
 
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            // We can only have Beautified, Minified or Both, so this test has inverted logic:
+            // output beautified if not minified only == (output beautified or output both)
+            if (translatorInstance.AssemblyInfo.OutputFormatting != JavaScriptOutputType.Minified)
             {
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    File.WriteAllText(Path.Combine(outputPath, "bridge.js"), reader.ReadToEnd());
-                }
-            }
-
-            if (!nodebug)
-            {
-                resourceName = "Bridge.Resources.bridge.min.js";
+                resourceName = "Bridge.Resources.bridge.js";
 
                 using (Stream stream = assembly.GetManifestResourceStream(resourceName))
                 {
                     using (StreamReader reader = new StreamReader(stream))
                     {
-                        File.WriteAllText(Path.Combine(outputPath, "bridge.min.js"), reader.ReadToEnd());
+                        File.WriteAllText(Path.Combine(outputPath, "bridge.js"), reader.ReadToEnd());
+                    }
+                }
+            }
+
+            // Like above test: output minified if not beautified only == (out minified or out both)
+            if (translatorInstance.AssemblyInfo.OutputFormatting != JavaScriptOutputType.Formatted)
+            {
+                if (!nodebug)
+                {
+                    resourceName = "Bridge.Resources.bridge.min.js";
+
+                    using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                    {
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            File.WriteAllText(Path.Combine(outputPath, "bridge.min.js"), reader.ReadToEnd());
+                        }
                     }
                 }
             }
