@@ -356,7 +356,18 @@ namespace Bridge.Translator
                     baseName = "$constructor";
                 }
 
-                this.Write(BridgeTypes.ToJsName(baseType, this.Emitter), ".prototype.");
+                string name = null;
+
+                if (this.TypeInfo.TypeDeclaration.BaseTypes.Any())
+                {
+                    name = BridgeTypes.ToJsName(this.TypeInfo.TypeDeclaration.BaseTypes.First(), this.Emitter);
+                }
+                else
+                {
+                    name = BridgeTypes.ToJsName(baseType, this.Emitter);
+                }                
+
+                this.Write(name, ".prototype.");
                 this.Write(baseName);
                 this.Write(".call");
                 appendScope = true;

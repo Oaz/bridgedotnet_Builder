@@ -286,15 +286,26 @@ namespace Bridge.Translator
 
                 var resolveResult = this.Emitter.Resolver.ResolveNode(targetMember, this.Emitter);
 
+                string name = null;
+
+                if (this.Emitter.TypeInfo.TypeDeclaration.BaseTypes.Any())
+                {
+                    name = BridgeTypes.ToJsName(this.Emitter.TypeInfo.TypeDeclaration.BaseTypes.First(), this.Emitter);
+                }
+                else
+                {
+                    name = BridgeTypes.ToJsName(baseType, this.Emitter);
+                }      
+
                 if (resolveResult != null && resolveResult is InvocationResolveResult)
                 {
                     InvocationResolveResult invocationResult = (InvocationResolveResult)resolveResult;
-                    this.Write(BridgeTypes.ToJsName(baseType, this.Emitter), ".prototype.", this.Emitter.GetEntityName(invocationResult.Member));
+                    this.Write(name, ".prototype.", this.Emitter.GetEntityName(invocationResult.Member));
                 }
                 else
                 {
                     string baseMethod = targetMember.MemberName;
-                    this.Write(BridgeTypes.ToJsName(baseType, this.Emitter), ".prototype.", this.Emitter.ChangeCase ? Object.Net.Utilities.StringUtils.ToLowerCamelCase(baseMethod) : baseMethod);
+                    this.Write(name, ".prototype.", this.Emitter.ChangeCase ? Object.Net.Utilities.StringUtils.ToLowerCamelCase(baseMethod) : baseMethod);
                 }
 
                 if (!isIgnore && argsInfo.HasTypeArguments)
