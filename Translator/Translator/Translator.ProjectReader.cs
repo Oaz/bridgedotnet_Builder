@@ -83,11 +83,11 @@ namespace Bridge.Translator
 
                 this.AssemblyLocation = Path.Combine(outputPath, this.GetAssemblyName(doc) + ".dll");
 
-                if (!File.Exists(this.AssemblyLocation))
-                {
-                    outputPath = this.GetOutputPath(doc, "Release");
-                    this.AssemblyLocation = Path.Combine(outputPath, this.GetAssemblyName(doc) + ".dll");
-                }
+                //if (!File.Exists(this.AssemblyLocation))
+                //{
+                //    outputPath = this.GetOutputPath(doc, "Release");
+                //    this.AssemblyLocation = Path.Combine(outputPath, this.GetAssemblyName(doc) + ".dll");
+                //}
             }
         }
 
