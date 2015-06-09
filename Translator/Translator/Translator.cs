@@ -1,7 +1,9 @@
 ﻿using Bridge.Contract;
 using Microsoft.Ajax.Utilities;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace Bridge.Translator
@@ -178,7 +180,8 @@ namespace Bridge.Translator
         public static void ExtractCore(Translator translatorInstance, string outputPath, bool nodebug = false)
         {
             var clrPath = translatorInstance.BridgeLocation;
-            var assembly = System.Reflection.Assembly.ReflectionOnlyLoadFrom(clrPath);
+            var assembly = System.Reflection.Assembly.UnsafeLoadFrom(clrPath);
+            
             string resourceName;
 
             // We can only have Beautified, Minified or Both, so this test has inverted logic:
