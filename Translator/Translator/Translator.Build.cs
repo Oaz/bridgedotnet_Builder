@@ -14,7 +14,7 @@ namespace Bridge.Translator
             {
                 case PlatformID.Win32NT:
                     return Environment.GetEnvironmentVariable("windir") + ps + "Microsoft.NET" + ps + "Framework" + ps +
-                        this.MSBuildVersion + ps + "msbuild";
+                        "v" + this.MSBuildVersion + ps + "msbuild";
                 default:
                     throw (Exception)Bridge.Translator.Exception.Create("Unsupported platform - {0}", Environment.OSVersion.Platform);
             }
@@ -36,7 +36,8 @@ namespace Bridge.Translator
             var info = new ProcessStartInfo()
             {
                 FileName = this.GetBuilderPath(),
-                Arguments = this.GetBuilderArguments()
+                Arguments = this.GetBuilderArguments(),
+                UseShellExecute = true
             };
             info.WindowStyle = ProcessWindowStyle.Hidden;
             using (var p = Process.Start(info))
