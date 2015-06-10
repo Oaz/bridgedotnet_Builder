@@ -312,7 +312,7 @@ namespace Bridge.Translator
             this.WriteNewLine();
             this.WriteNewLine();
             this.Outdent();
-            this.Write("$asyncBody();");
+            this.Write("$asyncBody.apply(this, arguments);");
 
             if (this.IsTaskReturn)
             {
