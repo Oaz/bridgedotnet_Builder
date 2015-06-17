@@ -38,6 +38,12 @@ namespace Bridge.Translator
                                 where x.Name.LocalName == "RootNamespace" || x.Name.LocalName == "AssemblyName"
                                 select x;
 
+            // Replace '\' with '/' in any occurrence of OutputPath
+            foreach (var ope in doc.Descendants().Where(e => e.Name.LocalName == "OutputPath" && e.Value.Contains("\\")))
+            {
+                ope.SetValue (ope.Value.Replace ("\\", "/"));
+            }
+
             foreach (var tag in combined_tags)
             {
                 if (tag.Value == "Bridge")
