@@ -120,9 +120,19 @@ namespace Bridge.Translator
 
         protected virtual void EmitCastExpression(Expression expression, AstType type, string method)
         {
-            if (method != Bridge.Translator.Emitter.IS && Helpers.IsIgnoreCast(type, this.Emitter))
+            var castToEnum = this.Emitter.BridgeTypes.ToType(type).Kind == TypeKind.Enum;
+
+            if (method != Bridge.Translator.Emitter.IS && (Helpers.IsIgnoreCast(type, this.Emitter) || castToEnum))
             {
                 expression.AcceptVisitor(this.Emitter);
+                return;
+            }
+
+            if (method == Bridge.Translator.Emitter.IS && castToEnum)
+            {
+                this.Write("Bridge.hasValue(");
+                expression.AcceptVisitor(this.Emitter);
+                this.Write(")");
                 return;
             }
 
