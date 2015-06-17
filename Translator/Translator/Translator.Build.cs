@@ -15,6 +15,9 @@ namespace Bridge.Translator
                 case PlatformID.Win32NT:
                     return Environment.GetEnvironmentVariable("windir") + ps + "Microsoft.NET" + ps + "Framework" + ps +
                         "v" + this.MSBuildVersion + ps + "msbuild";
+                case PlatformID.Unix:
+                case PlatformID.MacOSX:
+                    return "xbuild";
                 default:
                     throw (Exception)Bridge.Translator.Exception.Create("Unsupported platform - {0}", Environment.OSVersion.Platform);
             }
@@ -25,6 +28,8 @@ namespace Bridge.Translator
             switch (Environment.OSVersion.Platform)
             {
                 case PlatformID.Win32NT:
+                case PlatformID.Unix:
+                case PlatformID.MacOSX:
                     return String.Format(" \"{0}\" /t:Rebuild /p:Configuation={1}", Location, this.Configuration);
                 default:
                     throw (Exception)Bridge.Translator.Exception.Create("Unsupported platform - {0}", Environment.OSVersion.Platform);
