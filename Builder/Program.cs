@@ -57,6 +57,7 @@ namespace Bridge.Builder
                 // This code and logic is only compiled in when building bridge.net in Debug configuration
                 Console.WriteLine("-d or -debug             Attach the builder to an visual studio debugging instance.");
                 Console.WriteLine("                         Use this to attach the process to an open Bridge.NET solution.");
+                Console.WriteLine("                         This option is equivalent to Build.dll's 'AttachDebugger'.");
 #endif
                 Console.WriteLine("");
                 return;
@@ -109,6 +110,7 @@ namespace Bridge.Builder
                         break;
 #if DEBUG
                     case "-debug":
+                    case "-attachdebugger":
                     case "-d":
                         System.Diagnostics.Debugger.Launch();
                         break;

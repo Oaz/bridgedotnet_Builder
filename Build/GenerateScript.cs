@@ -62,6 +62,18 @@ namespace Bridge.Build
             set;
         }
 
+#if DEBUG
+        /// <summary>
+        /// Attaches the process to a debugger once a build event is triggered. If false/absent, does nothing.
+        /// This option is similar to Builder.exe's '-d'
+        /// </summary>
+        public bool AttachDebugger
+        {
+            get;
+            set;
+        }
+#endif
+
         protected virtual void LogMessage(string level, string message)
         {
             level = level ?? "message";
@@ -83,6 +95,14 @@ namespace Bridge.Build
         public override bool Execute()
         {
             var success = true;
+
+#if DEBUG
+            if (AttachDebugger)
+            {
+                System.Diagnostics.Debugger.Launch();
+            };
+#endif
+
             Bridge.Translator.Translator translator = null;
             try
             {
