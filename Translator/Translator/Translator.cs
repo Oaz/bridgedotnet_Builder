@@ -204,13 +204,16 @@ namespace Bridge.Translator
             {
                 if (!nodebug)
                 {
-                    resourceName = "Bridge.Resources.bridge.min.js";
+                    resourceName = "Bridge.Resources.bridge.js";
 
                     using (Stream stream = assembly.GetManifestResourceStream(resourceName))
                     {
                         using (StreamReader reader = new StreamReader(stream))
                         {
-                            File.WriteAllText(Path.Combine(outputPath, "bridge.min.js"), reader.ReadToEnd());
+                            var code = reader.ReadToEnd();
+                            var minifier = new Minifier();
+
+                            File.WriteAllText(Path.Combine(outputPath, "bridge.min.js"), minifier.MinifyJavaScript(code), System.Text.UTF8Encoding.UTF8);
                         }
                     }
                 }
