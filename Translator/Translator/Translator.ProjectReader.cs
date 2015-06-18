@@ -38,10 +38,20 @@ namespace Bridge.Translator
                                 where x.Name.LocalName == "RootNamespace" || x.Name.LocalName == "AssemblyName"
                                 select x;
 
-            // Replace '\' with '/' in any occurrence of OutputPath
+            // Replace '\' with '/' in any occurrence of <OutputPath><path></OutputPath>
             foreach (var ope in doc.Descendants().Where(e => e.Name.LocalName == "OutputPath" && e.Value.Contains("\\")))
             {
                 ope.SetValue (ope.Value.Replace ("\\", "/"));
+            }
+
+            // Replace now for <Compile Include="<path>" />
+            foreach (var ope in doc.Descendants().Where(e =>
+                e.Name.LocalName == "Compile" &&
+                e.Attributes().Any(a => a.Name.LocalName == "Include") &&
+                e.Attribute("Include").Value.Contains("\\")))
+            {
+                var incAtt = ope.Attribute("Include");
+                incAtt.SetValue(incAtt.Value.Replace("\\", "/"));
             }
 
             foreach (var tag in combined_tags)
