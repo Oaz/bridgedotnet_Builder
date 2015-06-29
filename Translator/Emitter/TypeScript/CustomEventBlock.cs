@@ -30,8 +30,7 @@ namespace Bridge.Translator.TypeScript
             {
                 var overloads = OverloadsCollection.Create(this.Emitter, customEventDeclaration, remover);
 
-                this.Write((remover ? "remove" : "add") + overloads.GetOverloadName());
-                this.WriteColon();
+                this.Write((remover ? "remove" : "add") + overloads.GetOverloadName());                
                 this.WriteOpenParentheses();
                 this.Write("value");
                 this.WriteColon();

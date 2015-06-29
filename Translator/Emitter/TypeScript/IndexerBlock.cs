@@ -32,8 +32,7 @@ namespace Bridge.Translator.TypeScript
                 var overloads = OverloadsCollection.Create(this.Emitter, indexerDeclaration, setter);
 
                 string name = overloads.GetOverloadName();
-                this.Write((setter ? "set" : "get") + name);
-                this.WriteColon();
+                this.Write((setter ? "set" : "get") + name);                
                 
                 this.EmitMethodParameters(indexerDeclaration.Parameters, indexerDeclaration, setter);
 
