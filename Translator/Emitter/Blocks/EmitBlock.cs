@@ -13,22 +13,6 @@ namespace Bridge.Translator
             this.Emitter = emitter;
         }
 
-        private void InitEmitter()
-        {
-            this.Emitter.Output = new StringBuilder();
-            this.Emitter.Locals = null;
-            this.Emitter.LocalsStack = null;
-            this.Emitter.IteratorCount = 0;
-            this.Emitter.ThisRefCounter = 0;
-            this.Emitter.Writers = new Stack<Tuple<string, StringBuilder, bool, Action>>();
-            this.Emitter.IsAssignment = false;
-            this.Emitter.Level = 0;
-            this.Emitter.IsNewLine = true;
-            this.Emitter.EnableSemicolon = true;
-            this.Emitter.Comma = false;
-            this.Emitter.CurrentDependencies = new List<IPluginDependency>();
-        }
-
         protected virtual StringBuilder GetOutputForType(ITypeInfo typeInfo)
         {
             string module = null;
@@ -263,7 +247,7 @@ namespace Bridge.Translator
                     continue;
                 }
 
-                this.InitEmitter();
+                this.Emitter.InitEmitter();
 
                 ITypeInfo typeInfo;
 

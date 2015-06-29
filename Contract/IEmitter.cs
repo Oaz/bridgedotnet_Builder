@@ -94,5 +94,6 @@ namespace Bridge.Contract
         Tuple<bool, string> IsGlobalTarget(IMember member);
         BridgeTypes BridgeTypes { get; set; }
         ITranslator Translator { get; set; }
+        void InitEmitter();
     }
 }

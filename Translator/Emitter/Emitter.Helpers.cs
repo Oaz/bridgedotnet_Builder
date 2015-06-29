@@ -485,10 +485,20 @@ namespace Bridge.Translator
             return false;
         }
 
-
-
-
-
-
+        public virtual void InitEmitter()
+        {
+            this.Output = new StringBuilder();
+            this.Locals = null;
+            this.LocalsStack = null;
+            this.IteratorCount = 0;
+            this.ThisRefCounter = 0;
+            this.Writers = new Stack<Tuple<string, StringBuilder, bool, Action>>();
+            this.IsAssignment = false;
+            this.Level = 0;
+            this.IsNewLine = true;
+            this.EnableSemicolon = true;
+            this.Comma = false;
+            this.CurrentDependencies = new List<IPluginDependency>();
+        }
     }
 }

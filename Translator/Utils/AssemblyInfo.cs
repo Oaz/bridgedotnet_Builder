@@ -148,5 +148,11 @@ namespace Bridge.Translator
             get;
             set;
         }
+
+        public bool GenerateTypeScript 
+        { 
+            get; 
+            set; 
+        }
     }
 }

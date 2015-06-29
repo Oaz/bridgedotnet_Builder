@@ -29,8 +29,23 @@ namespace Bridge.Translator
 
         public virtual Dictionary<string, string> Emit()
         {
-            new EmitBlock(this).Emit();
+            var blocks = this.GetBlocks();
+            foreach (var block in blocks)
+            {
+                block.Emit();
+            }
+
             return this.TransformOutputs();
+        }
+
+        private IEnumerable<IAbstractEmitterBlock> GetBlocks()
+        {
+            yield return new Bridge.Translator.EmitBlock(this);
+
+            if (this.AssemblyInfo.GenerateTypeScript)
+            {
+                yield return new Bridge.Translator.TypeScript.EmitBlock(this);
+            }
         }
     }
 }

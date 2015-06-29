@@ -93,5 +93,6 @@ namespace Bridge.Contract
         string AfterBuild { get; set; }
         bool AutoPropertyToField { get; set; }
         string PluginsPath { get; set; }
+        bool GenerateTypeScript { get; set; }
     }
 }

@@ -180,7 +180,7 @@ namespace Bridge.Contract
             return resolveResult.Type;
         }
 
-        public static string ToJsName(IType type, IEmitter emitter, bool asDefinition = false)
+        public static string ToJsName(IType type, IEmitter emitter, bool asDefinition = false, bool excludens = false)
         {
             if (type.Kind == TypeKind.Array)
             {
@@ -198,7 +198,7 @@ namespace Bridge.Contract
             }
 
             BridgeType bridgeType = emitter.BridgeTypes.Get(type, true);
-            string name = BridgeTypes.ConvertName(type.FullName);
+            string name = BridgeTypes.ConvertName(excludens ? type.Name : type.FullName);
             bool isCustomName = false;
             if (bridgeType != null)
             {
@@ -249,6 +249,13 @@ namespace Bridge.Contract
 
         public static string ToJsName(AstType astType, IEmitter emitter)
         {
+            var primitive = astType as PrimitiveType;
+
+            if (primitive != null && primitive.KnownTypeCode == KnownTypeCode.Void)
+            {
+                return "void";
+            }
+            
             var composedType = astType as ComposedType;
 
             if (composedType != null && composedType.ArraySpecifiers != null && composedType.ArraySpecifiers.Count > 0)

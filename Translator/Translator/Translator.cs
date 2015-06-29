@@ -25,7 +25,7 @@ namespace Bridge.Translator
             this.FolderMode = true;
             this.Location = folder;
             this.AssemblyLocation = lib;
-            this.Validator = this.CreateValidator();
+            this.Validator = this.CreateValidator();            
         }
 
         public Dictionary<string, string> Translate()
@@ -130,22 +130,25 @@ namespace Bridge.Translator
 
                 // If 'fileName' is an absolute path, Path.Combine will ignore the 'path' prefix.
                 string filePath = Path.Combine(path, fileName);
+                string extension = Path.GetExtension(filePath);
+                bool isJs = extension == Bridge.Translator.AssemblyInfo.JAVASCRIPT_EXTENSION;
 
                 System.IO.FileInfo file;
 
                 // We can only have Beautified, Minified or Both, so this test has inverted logic:
                 // output beautified if not minified only == (output beautified or output both)
-                if (this.AssemblyInfo.OutputFormatting != JavaScriptOutputType.Minified)
+                if (this.AssemblyInfo.OutputFormatting != JavaScriptOutputType.Minified || !isJs)
                 {
                     file = new System.IO.FileInfo(filePath);
                     file.Directory.Create();
-                    File.WriteAllText(file.FullName, "/* global Bridge */\n\n" + code, System.Text.UTF8Encoding.UTF8);
+                    string header = isJs ? "/* global Bridge */\n\n" : "";
+                    File.WriteAllText(file.FullName, header + code, System.Text.UTF8Encoding.UTF8);
                 }
 
                 // Like above test: output minified if not beautified only == (out minified or out both)
-                if (this.AssemblyInfo.OutputFormatting != JavaScriptOutputType.Formatted)
+                if (this.AssemblyInfo.OutputFormatting != JavaScriptOutputType.Formatted && isJs)
                 {
-                    fileName = Path.GetFileNameWithoutExtension(filePath) + ".min" + Path.GetExtension(filePath);
+                    fileName = Path.GetFileNameWithoutExtension(filePath) + ".min" + extension;
                     filePath = Path.Combine(Path.GetDirectoryName(filePath), fileName);
                     file = new System.IO.FileInfo(filePath);
                     file.Directory.Create();
