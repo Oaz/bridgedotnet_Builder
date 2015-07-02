@@ -53,6 +53,11 @@ namespace Bridge.Contract
             else
             {
                 fieldName = emitter.ChangeCase ? TypeConfigItem.ToLowerCamelCase(fieldName) : fieldName;
+
+                if (Helpers.IsReservedWord(fieldName))
+                {
+                    fieldName = "$" + fieldName;
+                }
             }
             return fieldName;
         }
