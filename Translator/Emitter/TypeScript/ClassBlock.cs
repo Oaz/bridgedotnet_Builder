@@ -124,70 +124,76 @@ namespace Bridge.Translator.TypeScript
 
         protected virtual void EmitBlock()
         {
-            var typeDef = this.Emitter.GetTypeDefinition();
-
-            new MemberBlock(this.Emitter, this.TypeInfo, false).Emit();
-
-            if (this.Position != this.Emitter.Output.Length && !this.Emitter.IsNewLine)
-            {
-                this.WriteNewLine();
-            }
-
-            this.EndBlock();
-
-            this.WriteNewLine();
-
-            this.Write("export ");
-            if (this.IsGeneric) 
-            {
-                this.WriteFunction();
-            }
-            else
-            {
-                this.Write("interface ");
-            }
             
-            this.Write(this.JsName);
+          var typeDef = this.Emitter.GetTypeDefinition();
 
-            if (!this.IsGeneric)
-            {
-                this.Write("Func extends Function ");
-            }
-            else
-            {
-                this.WriteOpenParentheses();
-                var comma = false;
-                foreach (var p in typeDef.GenericParameters)
+          new MemberBlock(this.Emitter, this.TypeInfo, false).Emit();
+          if (this.Emitter.TypeInfo.TypeDeclaration.ClassType != ICSharpCode.NRefactory.CSharp.ClassType.Interface || this.IsGeneric)
+          {
+                if (this.Position != this.Emitter.Output.Length && !this.Emitter.IsNewLine)
                 {
-                    if (comma)
-                    {
-                        this.WriteComma();
-                    }
-                    this.Write(p.Name);
-                    this.WriteColon();
-                    this.WriteOpenBrace();
-                    this.Write("prototype");
-                    this.WriteColon();
-                    this.Write(p.Name);
-
-                    this.WriteCloseBrace();
-                    comma = true;
+                    this.WriteNewLine();
                 }
 
-                this.WriteCloseParentheses();
-                this.WriteColon();
+                this.EndBlock();
+
+                this.WriteNewLine();
+
+                this.Write("export ");
+                if (this.IsGeneric)
+                {
+                    this.WriteFunction();
+                }
+                else
+                {
+                    this.Write("interface ");
+                }
+
+                this.Write(this.JsName);
+
+                if (!this.IsGeneric)
+                {
+                    this.Write("Func extends Function ");
+                }
+                else
+                {
+                    this.WriteOpenParentheses();
+                    var comma = false;
+                    foreach (var p in typeDef.GenericParameters)
+                    {
+                        if (comma)
+                        {
+                            this.WriteComma();
+                        }
+                        this.Write(p.Name);
+                        this.WriteColon();
+                        this.WriteOpenBrace();
+                        this.Write("prototype");
+                        this.WriteColon();
+                        this.Write(p.Name);
+
+                        this.WriteCloseBrace();
+                        comma = true;
+                    }
+
+                    this.WriteCloseParentheses();
+                    this.WriteColon();
+                }
+
+                this.BeginBlock();
+
+                this.Write("prototype: ");
+                this.Write(this.JsName);
+                this.WriteSemiColon();
+                this.WriteNewLine();
+                this.Position = this.Emitter.Output.Length;
+
+                if (this.Emitter.TypeInfo.TypeDeclaration.ClassType != ICSharpCode.NRefactory.CSharp.ClassType.Interface)
+                {
+                    new ConstructorBlock(this.Emitter, this.TypeInfo).Emit();
+                    new MemberBlock(this.Emitter, this.TypeInfo, true).Emit();
+                }
             }
-            
-            this.BeginBlock();
-
-            this.Write("prototype: ");
-            this.Write(this.JsName);
-            this.WriteSemiColon();
-            this.WriteNewLine();
-            this.Position = this.Emitter.Output.Length;            
-
-            new ConstructorBlock(this.Emitter, this.TypeInfo).Emit();
-            new MemberBlock(this.Emitter, this.TypeInfo, true).Emit();
         }
 
         protected virtual void EmitClassEnd()
@@ -205,7 +211,16 @@ namespace Bridge.Translator.TypeScript
                 this.Write("var ");
                 this.Write(this.JsName);
                 this.WriteColon();
-                this.Write(this.JsName + "Func");
+                var isInterface = this.Emitter.TypeInfo.TypeDeclaration.ClassType == ICSharpCode.NRefactory.CSharp.ClassType.Interface;
+                if (isInterface)
+                {
+                    this.Write("Function");                    
+                }
+                else
+                {
+                    this.Write(this.JsName + "Func");
+                }
+                
                 this.WriteSemiColon();
             }
         }
