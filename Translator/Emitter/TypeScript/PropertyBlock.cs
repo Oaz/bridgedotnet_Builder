@@ -22,7 +22,7 @@ namespace Bridge.Translator.TypeScript
 
         protected override void DoEmit()
         {
-            if (this.PropertyDeclaration.Getter.Body.IsNull && this.PropertyDeclaration.Setter.Body.IsNull)
+            if (this.PropertyDeclaration.Getter.Body.IsNull && this.PropertyDeclaration.Setter.Body.IsNull && this.Emitter.TypeInfo.TypeDeclaration.ClassType != ClassType.Interface)
             {
                 return;
             }

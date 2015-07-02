@@ -1,4 +1,5 @@
 ﻿using Bridge.Contract;
+using ICSharpCode.NRefactory.CSharp;
 using Mono.Cecil;
 using Object.Net.Utilities;
 using System.Linq;
@@ -35,8 +36,11 @@ namespace Bridge.Translator
         protected override void DoEmit()
         {
             this.EmitClassHeader();
-            this.EmitStaticBlock();
-            this.EmitInstantiableBlock();
+            if (this.TypeInfo.TypeDeclaration.ClassType != ClassType.Interface)
+            {
+                this.EmitStaticBlock();
+                this.EmitInstantiableBlock();
+            }
             this.EmitClassEnd();
         }
 

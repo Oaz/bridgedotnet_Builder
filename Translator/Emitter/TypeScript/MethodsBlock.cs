@@ -74,7 +74,7 @@ namespace Bridge.Translator.TypeScript
 
                 foreach (var method in group)
                 {
-                    if (!method.Body.IsNull)
+                    if (!method.Body.IsNull || this.Emitter.TypeInfo.TypeDeclaration.ClassType == ClassType.Interface)
                     {
                         new MethodBlock(this.Emitter, method).Emit();
                     }
@@ -91,7 +91,7 @@ namespace Bridge.Translator.TypeScript
 
                     foreach (var o in group)
                     {
-                        if (!o.Body.IsNull)
+                        if (!o.Body.IsNull && this.Emitter.TypeInfo.TypeDeclaration.ClassType != ClassType.Interface)
                         {
                             new OperatorBlock(this.Emitter, o).Emit();
                         }

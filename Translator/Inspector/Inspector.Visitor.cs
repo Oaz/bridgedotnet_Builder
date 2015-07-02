@@ -107,6 +107,10 @@ namespace Bridge.Translator
             {
                 typeDeclaration.AcceptChildren(this);
             }
+            else
+            {
+                typeDeclaration.AcceptChildren(this);
+            }
 
             if (add)
             {
