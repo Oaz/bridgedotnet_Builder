@@ -38,9 +38,16 @@ namespace Bridge.Translator.TypeScript
 
         protected override void DoEmit()
         {
-            this.EmitClassHeader();
-            this.EmitBlock();
-            this.EmitClassEnd();
+            if (this.TypeInfo.IsEnum)
+            {
+                new EnumBlock(this.Emitter, this.TypeInfo).Emit();
+            }
+            else
+            {
+                this.EmitClassHeader();
+                this.EmitBlock();
+                this.EmitClassEnd();
+            }            
         }
 
         protected virtual void EmitClassHeader()

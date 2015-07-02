@@ -158,6 +158,7 @@
     <Compile Include="Emitter\TypeScript\ClassBlock.cs" />
     <Compile Include="Emitter\TypeScript\ConstructorBlock.cs" />
     <Compile Include="Emitter\TypeScript\EmitBlock.cs" />
+    <Compile Include="Emitter\TypeScript\EnumBlock.cs" />
     <Compile Include="Emitter\TypeScript\MemberBlock.cs" />
     <Compile Include="Emitter\TypeScript\MethodsBlock.cs" />
     <Compile Include="Emitter\TypeScript\OperatorBlock.cs" />
